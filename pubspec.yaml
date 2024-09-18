@@ -13,11 +13,13 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   photo_gallery: ^2.2.1
-  permission_handler: ^11.3.1
+  permission_handler:
+    git: https://github.com/kumsumit/permission_handler.git
   transparent_image: ^2.0.1
-  video_player: ^2.9.1
-  device_info_plus: ^10.1.2
-  # refreshed: ^2.9.0
+  video_player: 
+    git: https://github.com/kumsumit/video_player.git
+  device_info_plus: 
+    git: https://github.com/kumsumit/device_info_plus.git
   get: ^4.6.6
   video_thumbnail:
     git: https://github.com/kumsumit/video_thumbnail.git
