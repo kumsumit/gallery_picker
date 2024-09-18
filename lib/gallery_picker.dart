@@ -68,7 +68,8 @@ class GalleryPicker {
             type: pageTransitionType,
             child: GalleryPickerView(
               onSelect: (mediaTmp) {
-                media = mediaTmp;
+                // media = mediaTmp;
+                 media = List.from(mediaTmp);
               },
               config: config,
               locale: locale,
