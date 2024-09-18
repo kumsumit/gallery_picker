@@ -12,7 +12,8 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  photo_gallery: ^2.2.1
+  photo_gallery:
+    git: https://github.com/kumsumit/photo_gallery.git
   permission_handler:
     git: https://github.com/kumsumit/permission_handler.git
   transparent_image: ^2.0.1
