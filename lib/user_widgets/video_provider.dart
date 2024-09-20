@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 import '../models/media_file.dart';
 
 class VideoProvider extends StatefulWidget {
@@ -19,7 +19,7 @@ class VideoProvider extends StatefulWidget {
 }
 
 class _VideoProviderState extends State<VideoProvider> {
-  VideoPlayerController? _controller;
+  VlcPlayerController? _controller;
   File? _file;
   late MediaFile media;
 
@@ -39,7 +39,7 @@ class _VideoProviderState extends State<VideoProvider> {
       } else {
         _file = media.file;
       }
-      _controller = VideoPlayerController.file(_file!);
+      _controller = VlcPlayerController.file(_file!);
       _controller?.initialize().then((_) {
         setState(() {});
       });
@@ -84,7 +84,8 @@ class _VideoProviderState extends State<VideoProvider> {
                 AspectRatio(
                   aspectRatio: _controller!.value.aspectRatio,
                   child: Stack(children: [
-                    VideoPlayer(_controller!),
+                    VlcPlayer(controller:_controller!, aspectRatio: MediaQuery.of(context).devicePixelRatio,
+                    placeholder: const CircularProgressIndicator(),),
                     Center(
                       child: TextButton(
                         onPressed: () {

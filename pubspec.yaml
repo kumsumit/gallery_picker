@@ -17,8 +17,8 @@ dependencies:
   permission_handler:
     git: https://github.com/kumsumit/permission_handler.git
   transparent_image: ^2.0.1
-  video_player: 
-    git: https://github.com/kumsumit/video_player.git
+  flutter_vlc_player: 
+    git: https://github.com/kumsumit/flutter_vlc_player.git
   device_info_plus: 
     git: https://github.com/kumsumit/device_info_plus.git
   get: ^4.6.6
