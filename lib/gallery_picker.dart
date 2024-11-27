@@ -69,7 +69,7 @@ class GalleryPicker {
             child: GalleryPickerView(
               onSelect: (mediaTmp) {
                 // media = mediaTmp;
-                 media = List.from(mediaTmp);
+                media = List.from(mediaTmp);
               },
               config: config,
               locale: locale,
