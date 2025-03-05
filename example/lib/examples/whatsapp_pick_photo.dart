@@ -155,7 +155,7 @@ class _WhatsappPickPhotoState extends State<WhatsappPickPhoto> {
                                   if (selectedMedias
                                       .any((element) => element.id == media.id))
                                     Container(
-                                      color: Colors.black.withOpacity(0.3),
+                                      color: Colors.black.withAlpha(85),
                                       alignment: Alignment.center,
                                       child: const Icon(
                                         Icons.check,
@@ -203,7 +203,7 @@ class _WhatsappPickPhotoState extends State<WhatsappPickPhoto> {
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.5),
+                            color: Colors.black.withAlpha(127),
                             shape: BoxShape.circle),
                         padding: const EdgeInsets.all(8),
                         child: const Icon(
@@ -259,15 +259,17 @@ class _WhatsappPickPhotoState extends State<WhatsappPickPhoto> {
                         }
                         initCamera();
                       },
-                      child: Container(
+                      child: DecoratedBox(
                         decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.5),
+                            color: Colors.black.withAlpha(127),
                             shape: BoxShape.circle),
-                        padding: const EdgeInsets.all(8),
-                        child: const Icon(
-                          Icons.cameraswitch,
-                          size: 20,
-                          color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: const Icon(
+                            Icons.cameraswitch,
+                            size: 20,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
