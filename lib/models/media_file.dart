@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:photo_gallery/photo_gallery.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:video_thumbnail_plugin/video_thumbnail_plugin.dart';
 
 enum MediaType { image, video }
 
@@ -36,13 +36,13 @@ class MediaFile {
   }
 
   Future<Uint8List> getThumbnail({bool highQuality = true}) async {
-    if (_medium == null) {
+    if (_medium == null && isVideo && file != null) {
+      await VideoThumbnailPlugin.generateGifThumbnail(
+        videoPath: _file!.path,
+        thumbnailPath: "${file!.path}.gif",
+      );
       thumbnail = isVideo
-          ? (await VideoThumbnail.thumbnailData(
-              video: _file!.path,
-              imageFormat: ImageFormat.JPEG,
-              quality: highQuality ? 100 : 20,
-            ))!
+          ? File("${file!.path}.gif").readAsBytesSync()
           : await getData();
     } else {
       thumbnail = Uint8List.fromList(

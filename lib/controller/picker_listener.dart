@@ -15,7 +15,7 @@ class PickerListener extends GetxController {
   @override
   void dispose() {
     controller.close();
-    GetInstance().delete<PickerListener>();
+    Bind.delete<PickerListener>();
     super.dispose();
   }
 }

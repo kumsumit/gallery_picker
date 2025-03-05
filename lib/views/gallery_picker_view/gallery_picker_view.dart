@@ -48,7 +48,7 @@ class _GalleryPickerState extends State<GalleryPickerView> {
   late Config config;
   @override
   void initState() {
-    if (GetInstance().isRegistered<PhoneGalleryController>()) {
+    if (Bind.isRegistered<PhoneGalleryController>()) {
       galleryController = Get.find<PhoneGalleryController>();
       if (galleryController.configurationCompleted) {
         galleryController.updateConfig(widget.config);
@@ -91,7 +91,7 @@ class _GalleryPickerState extends State<GalleryPickerView> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return GetBuilder<PhoneGalleryController>(builder: (controller) {
-      return GetInstance().isRegistered<PhoneGalleryController>()
+      return Bind.isRegistered<PhoneGalleryController>()
           ? controller.permissionGranted != false
               ? PageView(
                   controller: controller.pageController,
@@ -99,7 +99,7 @@ class _GalleryPickerState extends State<GalleryPickerView> {
                   children: [
                     PopScope(
                         canPop: true,
-                        onPopInvoked: (value) {
+                        onPopInvokedWithResult: (value, result) {
                           if (!widget.isBottomSheet) {
                             controller.disposeController();
                           }

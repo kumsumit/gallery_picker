@@ -1,4 +1,4 @@
-library gallery_picker;
+library;
 
 import 'package:bottom_sheet_scaffold/bottom_sheet_scaffold.dart';
 import 'package:flutter/material.dart';
@@ -41,13 +41,13 @@ class GalleryPicker {
   }
 
   static void disposeSelectedFilesListener() {
-    if (GetInstance().isRegistered<PickerListener>()) {
+    if (Bind.isRegistered<PickerListener>()) {
       Get.find<PickerListener>().dispose();
     }
   }
 
   static void dispose() {
-    if (GetInstance().isRegistered<PhoneGalleryController>()) {
+    if (Bind.isRegistered<PhoneGalleryController>()) {
       Get.find<PhoneGalleryController>().disposeController();
     }
   }

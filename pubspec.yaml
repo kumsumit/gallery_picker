@@ -5,7 +5,7 @@ homepage: https://github.com/FlutterWay/gallery_picker
 publish_to: none
 
 environment:
-  sdk: '>=3.5.2 <4.0.0'
+  sdk: ">=3.5.2 <4.0.0"
   flutter: ">=3.24.3"
 
 dependencies:
@@ -17,19 +17,22 @@ dependencies:
   permission_handler:
     git: https://github.com/kumsumit/permission_handler.git
   transparent_image: ^2.0.1
-  media_kit: '^1.1.11'
-  media_kit_libs_video: '^1.0.5'
-  media_kit_video: '^1.2.5'
-  device_info_plus: 
+  media_kit: "^1.1.11"
+  media_kit_libs_video: "^1.0.5"
+  media_kit_video: "^1.2.5"
+  device_info_plus:
     git: https://github.com/kumsumit/device_info_plus.git
-  video_thumbnail:
-    git: https://github.com/kumsumit/video_thumbnail.git
-  intl: ^0.19.0
+  video_thumbnail_plugin:
+    git: "https://github.com/sumitsharansatsangi/video_thumbnail_plugin.git"
+  intl: ^0.20.0
   page_transition: ^2.1.0
-  bottom_sheet_scaffold: ^0.1.9
-  path: '^1.9.0'
-  path_provider: 
-    git: 'https://github.com/kumsumit/path_provider.git'
+  bottom_sheet_scaffold:
+    git: https://github.com/sumitsharansatsangi/bottom_sheet_scaffold.git
+  path: "^1.9.0"
+  path_provider:
+    git: "https://github.com/kumsumit/path_provider.git"
+  get:
+    git: https://github.com/jonataslaw/getx.git
 dev_dependencies:
   flutter_test:
     sdk: flutter

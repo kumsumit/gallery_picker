@@ -90,7 +90,7 @@ class GalleryAlbum {
       dateCategories.expand((element) => element.files).toList();
 
   String getDateCategory(MediaFile media, {Locale? locale}) {
-    Config config = GetInstance().isRegistered<PhoneGalleryController>()
+    Config config = Bind.isRegistered<PhoneGalleryController>()
         ? Get.find<PhoneGalleryController>().config
         : Config();
     DateTime? lastDate = media.lastModified;

@@ -41,7 +41,7 @@ class PickerScaffold extends StatelessWidget {
     this.multipleMediaBuilder,
     this.onWillPop,
   }) {
-    if (GetInstance().isRegistered<PhoneGalleryController>()) {
+    if (Bind.isRegistered<PhoneGalleryController>()) {
       if (initSelectedMedia != null) {
         Get.find<PhoneGalleryController>()
             .updateSelectedFiles(initSelectedMedia!);
@@ -115,7 +115,7 @@ class PickerScaffold extends StatelessWidget {
       body: body,
       onWillPop: () async {
         if (BottomSheetPanel.isOpen) {
-          if (GetInstance().isRegistered<PhoneGalleryController>() &&
+          if (Bind.isRegistered<PhoneGalleryController>() &&
               Get.find<PhoneGalleryController>().selectedAlbum != null) {
             Get.find<PhoneGalleryController>().backToPicker();
           } else {
@@ -135,7 +135,7 @@ class PickerScaffold extends StatelessWidget {
         minHeight: bottomSheetMinHeight,
         maxHeight: MediaQuery.of(context).size.height,
         onHide: () {
-          if (GetInstance().isRegistered<PhoneGalleryController>()) {
+          if (Bind.isRegistered<PhoneGalleryController>()) {
             Get.find<PhoneGalleryController>().resetBottomSheetView();
           }
         },
