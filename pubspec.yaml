@@ -17,9 +17,12 @@ dependencies:
   permission_handler:
     git: https://github.com/kumsumit/permission_handler.git
   transparent_image: ^2.0.1
-  media_kit: "^1.1.11"
-  media_kit_libs_video: "^1.0.5"
-  media_kit_video: "^1.2.5"
+  media_kit:
+    git: https://github.com/kumsumit/media_kit.git
+  media_kit_video:
+    git: https://github.com/kumsumit/media_kit_video.git
+  media_kit_libs_video:
+    git: https://github.com/kumsumit/media_kit_libs_video.git
   device_info_plus:
     git: https://github.com/kumsumit/device_info_plus.git
   video_thumbnail_plugin:
