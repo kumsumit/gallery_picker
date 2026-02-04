@@ -5,8 +5,11 @@ import '../../controller/gallery_controller.dart';
 class PickerAppBar extends StatelessWidget implements PreferredSizeWidget {
   final PhoneGalleryController controller;
   final bool isBottomSheet;
-  const PickerAppBar(
-      {super.key, required this.isBottomSheet, required this.controller});
+  const PickerAppBar({
+    super.key,
+    required this.isBottomSheet,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,19 +17,17 @@ class PickerAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       backgroundColor: controller.config.appbarColor,
       leading: TextButton(
-          onPressed: () async {
-            if (isBottomSheet) {
-              BottomSheetPanel.close();
-            } else {
-              Navigator.pop(context);
-              await Future.delayed(const Duration(milliseconds: 500));
-              controller.disposeController();
-            }
-          },
-          child: Icon(
-            Icons.arrow_back,
-            color: controller.config.appbarIconColor,
-          )),
+        onPressed: () async {
+          if (isBottomSheet) {
+            BottomSheetPanel.close();
+          } else {
+            Navigator.pop(context);
+            await Future.delayed(const Duration(milliseconds: 500));
+            controller.disposeController();
+          }
+        },
+        child: Icon(Icons.arrow_back, color: controller.config.appbarIconColor),
+      ),
       title: getTitle(),
       actions: [
         !controller.pickerMode && controller.isRecent
@@ -37,8 +38,9 @@ class PickerAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: Icon(
                   Icons.check_box_outlined,
                   color: controller.config.appbarIconColor,
-                ))
-            : const SizedBox()
+                ),
+              )
+            : const SizedBox(),
       ],
     );
   }

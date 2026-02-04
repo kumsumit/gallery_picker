@@ -8,9 +8,11 @@ class SelectedMediasView extends StatelessWidget {
   final PhoneGalleryController controller;
   final Config config;
   final bool isBottomSheet;
-  SelectedMediasView(
-      {super.key, required this.controller, required this.isBottomSheet})
-      : config = controller.config;
+  SelectedMediasView({
+    super.key,
+    required this.controller,
+    required this.isBottomSheet,
+  }) : config = controller.config;
 
   @override
   Widget build(BuildContext context) {
@@ -32,16 +34,20 @@ class SelectedMediasView extends StatelessWidget {
                   for (var mediaFile in controller.selectedFiles)
                     Padding(
                       padding: const EdgeInsets.only(
-                          top: 3.0, bottom: 3.0, right: 2),
+                        top: 3.0,
+                        bottom: 3.0,
+                        right: 2,
+                      ),
                       child: ThumbnailMediaFile(
-                          file: mediaFile,
-                          width: 50,
-                          height: 55,
-                          radius: 5,
-                          noIcon: true,
-                          noSelectedIcon: true,
-                          failIconColor: controller.config.appbarIconColor,
-                          controller: controller),
+                        file: mediaFile,
+                        width: 50,
+                        height: 55,
+                        radius: 5,
+                        noIcon: true,
+                        noSelectedIcon: true,
+                        failIconColor: controller.config.appbarIconColor,
+                        controller: controller,
+                      ),
                     ),
                 ],
               ),
@@ -51,18 +57,27 @@ class SelectedMediasView extends StatelessWidget {
                 if (controller.selectedFiles.length == 1 &&
                     controller.heroBuilder != null) {
                   Navigator.of(context).push(
-                      MaterialPageRoute<void>(builder: (BuildContext context) {
-                    return controller.heroBuilder!(
-                        controller.selectedFiles[0].id,
-                        controller.selectedFiles[0],
-                        context);
-                  }));
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) {
+                        return controller.heroBuilder!(
+                          controller.selectedFiles[0].id,
+                          controller.selectedFiles[0],
+                          context,
+                        );
+                      },
+                    ),
+                  );
                 } else if (controller.multipleMediasBuilder != null) {
                   Navigator.of(context).push(
-                      MaterialPageRoute<void>(builder: (BuildContext context) {
-                    return controller.multipleMediasBuilder!(
-                        controller.selectedFiles, context);
-                  }));
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) {
+                        return controller.multipleMediasBuilder!(
+                          controller.selectedFiles,
+                          context,
+                        );
+                      },
+                    ),
+                  );
                 } else {
                   controller.onSelect(controller.selectedFiles);
                   if (isBottomSheet) {
@@ -74,7 +89,7 @@ class SelectedMediasView extends StatelessWidget {
                 }
               },
               child: config.selectIcon,
-            )
+            ),
           ],
         ),
       ),

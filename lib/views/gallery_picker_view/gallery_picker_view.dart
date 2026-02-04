@@ -16,27 +16,28 @@ class GalleryPickerView extends StatefulWidget {
   final Config? config;
   final Function(List<MediaFile> selectedMedia) onSelect;
   final Widget Function(String tag, MediaFile media, BuildContext context)?
-      heroBuilder;
+  heroBuilder;
   final Widget Function(List<MediaFile> media, BuildContext context)?
-      multipleMediaBuilder;
+  multipleMediaBuilder;
   final bool startWithRecent;
   final bool isBottomSheet;
   final Locale? locale;
   final List<MediaFile>? initSelectedMedia;
   final List<MediaFile>? extraRecentMedia;
   final bool singleMedia;
-  const GalleryPickerView(
-      {super.key,
-      this.config,
-      required this.onSelect,
-      this.initSelectedMedia,
-      this.extraRecentMedia,
-      this.singleMedia = false,
-      this.isBottomSheet = false,
-      this.heroBuilder,
-      this.locale,
-      this.multipleMediaBuilder,
-      this.startWithRecent = false});
+  const GalleryPickerView({
+    super.key,
+    this.config,
+    required this.onSelect,
+    this.initSelectedMedia,
+    this.extraRecentMedia,
+    this.singleMedia = false,
+    this.isBottomSheet = false,
+    this.heroBuilder,
+    this.locale,
+    this.multipleMediaBuilder,
+    this.startWithRecent = false,
+  });
 
   @override
   State<GalleryPickerView> createState() => _GalleryPickerState();
@@ -53,25 +54,29 @@ class _GalleryPickerState extends State<GalleryPickerView> {
       if (galleryController.configurationCompleted) {
         galleryController.updateConfig(widget.config);
       } else {
-        galleryController.configuration(widget.config,
-            onSelect: widget.onSelect,
-            startWithRecent: widget.startWithRecent,
-            heroBuilder: widget.heroBuilder,
-            multipleMediasBuilder: widget.multipleMediaBuilder,
-            initSelectedMedias: widget.initSelectedMedia,
-            extraRecentMedia: widget.extraRecentMedia,
-            isRecent: widget.startWithRecent);
-      }
-    } else {
-      galleryController = Get.put(PhoneGalleryController());
-      galleryController.configuration(widget.config,
+        galleryController.configuration(
+          widget.config,
           onSelect: widget.onSelect,
           startWithRecent: widget.startWithRecent,
           heroBuilder: widget.heroBuilder,
           multipleMediasBuilder: widget.multipleMediaBuilder,
           initSelectedMedias: widget.initSelectedMedia,
           extraRecentMedia: widget.extraRecentMedia,
-          isRecent: widget.startWithRecent);
+          isRecent: widget.startWithRecent,
+        );
+      }
+    } else {
+      galleryController = Get.put(PhoneGalleryController());
+      galleryController.configuration(
+        widget.config,
+        onSelect: widget.onSelect,
+        startWithRecent: widget.startWithRecent,
+        heroBuilder: widget.heroBuilder,
+        multipleMediasBuilder: widget.multipleMediaBuilder,
+        initSelectedMedias: widget.initSelectedMedia,
+        extraRecentMedia: widget.extraRecentMedia,
+        isRecent: widget.startWithRecent,
+      );
     }
     config = galleryController.config;
     if (!galleryController.isInitialized) {
@@ -90,86 +95,100 @@ class _GalleryPickerState extends State<GalleryPickerView> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    return GetBuilder<PhoneGalleryController>(builder: (controller) {
-      return Bind.isRegistered<PhoneGalleryController>()
-          ? controller.permissionGranted != false
-              ? PageView(
-                  controller: controller.pageController,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: [
-                    PopScope(
-                        canPop: true,
-                        onPopInvokedWithResult: (value, result) {
-                          if (!widget.isBottomSheet) {
-                            controller.disposeController();
-                          }
-                        },
-                        child: Scaffold(
-                          backgroundColor: config.backgroundColor,
-                          appBar: PickerAppBar(
-                            controller: controller,
-                            isBottomSheet: widget.isBottomSheet,
-                          ),
-                          body: Column(
-                            children: [
-                              Container(
-                                width: width,
-                                height: 48,
-                                color: config.appbarColor,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Container(
-                                      decoration: controller.isRecent
-                                          ? BoxDecoration(
-                                              border: Border(
-                                              bottom: BorderSide(
-                                                color: config.underlineColor,
-                                                width: 3.0,
-                                              ),
-                                            ))
-                                          : null,
-                                      height: 48,
-                                      width: width / 2,
-                                      child: TextButton(
+    return GetBuilder<PhoneGalleryController>(
+      builder: (controller) {
+        return Bind.isRegistered<PhoneGalleryController>()
+            ? controller.permissionGranted != false
+                  ? PageView(
+                      controller: controller.pageController,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: [
+                        PopScope(
+                          canPop: true,
+                          onPopInvokedWithResult: (value, result) {
+                            if (!widget.isBottomSheet) {
+                              controller.disposeController();
+                            }
+                          },
+                          child: Scaffold(
+                            backgroundColor: config.backgroundColor,
+                            appBar: PickerAppBar(
+                              controller: controller,
+                              isBottomSheet: widget.isBottomSheet,
+                            ),
+                            body: Column(
+                              children: [
+                                Container(
+                                  width: width,
+                                  height: 48,
+                                  color: config.appbarColor,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Container(
+                                        decoration: controller.isRecent
+                                            ? BoxDecoration(
+                                                border: Border(
+                                                  bottom: BorderSide(
+                                                    color:
+                                                        config.underlineColor,
+                                                    width: 3.0,
+                                                  ),
+                                                ),
+                                              )
+                                            : null,
+                                        height: 48,
+                                        width: width / 2,
+                                        child: TextButton(
                                           onPressed: () {
                                             controller.pickerPageController
-                                                .animateToPage(0,
-                                                    duration: const Duration(
-                                                        milliseconds: 50),
-                                                    curve: Curves.easeIn);
+                                                .animateToPage(
+                                                  0,
+                                                  duration: const Duration(
+                                                    milliseconds: 50,
+                                                  ),
+                                                  curve: Curves.easeIn,
+                                                );
                                             setState(() {
                                               controller.isRecent = true;
-                                              controller
-                                                  .switchPickerMode(false);
+                                              controller.switchPickerMode(
+                                                false,
+                                              );
                                             });
                                           },
-                                          child: Text(config.recents,
-                                              style: controller.isRecent
-                                                  ? config.selectedMenuStyle
-                                                  : config
-                                                      .unselectedMenuStyle)),
-                                    ),
-                                    Container(
-                                      decoration: !controller.isRecent
-                                          ? BoxDecoration(
-                                              border: Border(
-                                              bottom: BorderSide(
-                                                color: config.underlineColor,
-                                                width: 3.0,
-                                              ),
-                                            ))
-                                          : null,
-                                      height: 48,
-                                      width: width / 2,
-                                      child: TextButton(
+                                          child: Text(
+                                            config.recents,
+                                            style: controller.isRecent
+                                                ? config.selectedMenuStyle
+                                                : config.unselectedMenuStyle,
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        decoration: !controller.isRecent
+                                            ? BoxDecoration(
+                                                border: Border(
+                                                  bottom: BorderSide(
+                                                    color:
+                                                        config.underlineColor,
+                                                    width: 3.0,
+                                                  ),
+                                                ),
+                                              )
+                                            : null,
+                                        height: 48,
+                                        width: width / 2,
+                                        child: TextButton(
                                           onPressed: () {
                                             controller.pickerPageController
-                                                .animateToPage(1,
-                                                    duration: const Duration(
-                                                        milliseconds: 50),
-                                                    curve: Curves.easeIn);
+                                                .animateToPage(
+                                                  1,
+                                                  duration: const Duration(
+                                                    milliseconds: 50,
+                                                  ),
+                                                  curve: Curves.easeIn,
+                                                );
                                             controller.isRecent = false;
                                             controller.switchPickerMode(false);
                                           },
@@ -178,13 +197,14 @@ class _GalleryPickerState extends State<GalleryPickerView> {
                                             style: controller.isRecent
                                                 ? config.unselectedMenuStyle
                                                 : config.selectedMenuStyle,
-                                          )),
-                                    )
-                                  ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Expanded(
-                                child: PageView(
+                                Expanded(
+                                  child: PageView(
                                     controller: controller.pickerPageController,
                                     onPageChanged: (value) {
                                       if (value == 0) {
@@ -204,52 +224,59 @@ class _GalleryPickerState extends State<GalleryPickerView> {
                                               controller: controller,
                                               isBottomSheet:
                                                   widget.isBottomSheet,
-                                              singleMedia: widget.singleMedia)
+                                              singleMedia: widget.singleMedia,
+                                            )
                                           : const Center(
                                               child: CircularProgressIndicator(
-                                              color: Colors.grey,
-                                            )),
+                                                color: Colors.grey,
+                                              ),
+                                            ),
                                       AlbumCategoriesView(
                                         controller: controller,
                                         isBottomSheet: widget.isBottomSheet,
                                         singleMedia: widget.singleMedia,
-                                      )
-                                    ]),
-                              ),
-                            ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        )),
-                    AlbumPage(
-                        album: controller.selectedAlbum,
-                        controller: controller,
-                        singleMedia: widget.singleMedia,
-                        isBottomSheet: widget.isBottomSheet)
-                  ],
-                )
-              : Material(
-                  child: controller.config.permissionDeniedPage ??
-                      PermissionDeniedView(
-                        config: controller.config,
-                      ),
-                )
-          : ReloadGallery(
-              config,
-              onpressed: () async {
-                galleryController = Get.put(PhoneGalleryController());
-                galleryController.configuration(widget.config,
+                        ),
+                        AlbumPage(
+                          album: controller.selectedAlbum,
+                          controller: controller,
+                          singleMedia: widget.singleMedia,
+                          isBottomSheet: widget.isBottomSheet,
+                        ),
+                      ],
+                    )
+                  : Material(
+                      child:
+                          controller.config.permissionDeniedPage ??
+                          PermissionDeniedView(config: controller.config),
+                    )
+            : ReloadGallery(
+                config,
+                onpressed: () async {
+                  galleryController = Get.put(PhoneGalleryController());
+                  galleryController.configuration(
+                    widget.config,
                     onSelect: widget.onSelect,
                     startWithRecent: widget.startWithRecent,
                     heroBuilder: widget.heroBuilder,
                     multipleMediasBuilder: widget.multipleMediaBuilder,
                     initSelectedMedias: widget.initSelectedMedia,
                     extraRecentMedia: widget.extraRecentMedia,
-                    isRecent: widget.startWithRecent);
-                if (!controller.isInitialized) {
-                  await controller.initializeAlbums(locale: widget.locale);
-                }
-                setState(() {});
-              },
-            );
-    });
+                    isRecent: widget.startWithRecent,
+                  );
+                  if (!controller.isInitialized) {
+                    await controller.initializeAlbums(locale: widget.locale);
+                  }
+                  setState(() {});
+                },
+              );
+      },
+    );
   }
 }

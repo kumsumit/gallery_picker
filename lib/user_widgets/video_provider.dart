@@ -24,11 +24,12 @@ class VideoProvider extends StatefulWidget {
 }
 
 class _VideoProviderState extends State<VideoProvider> {
-    late final Player player = Player();
+  late final Player player = Player();
   late final VideoController controller = VideoController(
     player,
-    configuration:
-        const VideoControllerConfiguration(enableHardwareAcceleration: true),
+    configuration: const VideoControllerConfiguration(
+      enableHardwareAcceleration: true,
+    ),
   );
 
   File? _file;
@@ -41,7 +42,6 @@ class _VideoProviderState extends State<VideoProvider> {
       initMedia();
     });
     super.initState();
-   
   }
 
   Future<void> initMedia() async {
@@ -51,9 +51,9 @@ class _VideoProviderState extends State<VideoProvider> {
       } else {
         _file = media.file;
       }
-      if(_file != null){
-     player.open(Media('file://${_file!.path}'));
-     }
+      if (_file != null) {
+        player.open(Media('file://${_file!.path}'));
+      }
     } catch (e) {
       if (kDebugMode) {
         print("Failed : $e");
@@ -66,7 +66,6 @@ class _VideoProviderState extends State<VideoProvider> {
     player.dispose();
     super.dispose();
   }
-
 
   bool anyProcess = false;
   @override
@@ -87,8 +86,7 @@ class _VideoProviderState extends State<VideoProvider> {
         const Spacer(),
         MaterialDesktopCustomButton(
           onPressed: () {
-            showSnackBar(context,  basename(_file!.path));
-           
+            showSnackBar(context, basename(_file!.path));
           },
           icon: const Icon(Icons.info),
         ),
@@ -97,32 +95,34 @@ class _VideoProviderState extends State<VideoProvider> {
             final Uint8List? screenshot = await player.screenshot();
             if (screenshot != null) {
               final directory = await getApplicationDocumentsDirectory();
-              final newDirectory =
-                  Directory('${directory.path}/filex/screenshots');
+              final newDirectory = Directory(
+                '${directory.path}/filex/screenshots',
+              );
               await newDirectory.create(recursive: true);
               final filename = 'Screenshot_${getFormattedDateTime()}.jpg';
-              final pathOfImage =
-                  await File('${newDirectory.path}/$filename').create();
+              final pathOfImage = await File(
+                '${newDirectory.path}/$filename',
+              ).create();
               await pathOfImage.writeAsBytes(screenshot);
               if (mounted && context.mounted) {
-                showSnackBar(context,
-                    "Screenshot captured $filename",);
+                showSnackBar(context, "Screenshot captured $filename");
               }
             }
           },
           icon: const Icon(Icons.camera),
         ),
         MaterialDesktopCustomButton(
-            onPressed: () async {
-              final file = await File(_file!.path).delete();
-              if (!await file.exists()) {
-                if (mounted && context.mounted) {
-                  Navigator.pop(context);
-                  showSnackBar(context, "${_file!.path} deleted succesfully",);
-                }
+          onPressed: () async {
+            final file = await File(_file!.path).delete();
+            if (!await file.exists()) {
+              if (mounted && context.mounted) {
+                Navigator.pop(context);
+                showSnackBar(context, "${_file!.path} deleted succesfully");
               }
-            },
-            icon: const Icon(Icons.delete))
+            }
+          },
+          icon: const Icon(Icons.delete),
+        ),
       ],
     );
     return MaterialVideoControlsTheme(
@@ -131,11 +131,10 @@ class _VideoProviderState extends State<VideoProvider> {
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child:  Video(
-                  controller: controller,
-                  width: MediaQuery.of(context).size.width,
-                )
-              
+          child: Video(
+            controller: controller,
+            width: MediaQuery.of(context).size.width,
+          ),
         ),
       ),
     );

@@ -22,7 +22,10 @@ void showErrorSnackBar(BuildContext context, String message) {
       child: Material(
         color: Colors.transparent,
         child: SlideInSnackbar(
-            message: message, color: Colors.white, backgroundColor: Colors.red),
+          message: message,
+          color: Colors.white,
+          backgroundColor: Colors.red,
+        ),
       ),
     ),
   );
@@ -43,9 +46,10 @@ void showSnackBar(BuildContext context, String message) {
       child: Material(
         color: Colors.transparent,
         child: SlideInSnackbar(
-            message: message,
-            color: Theme.of(context).colorScheme.onPrimary,
-            backgroundColor: Theme.of(context).colorScheme.primary),
+          message: message,
+          color: Theme.of(context).colorScheme.onPrimary,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+        ),
       ),
     ),
   );
@@ -62,11 +66,12 @@ class SlideInSnackbar extends StatefulWidget {
   final String message;
   final Color color;
   final Color backgroundColor;
-  const SlideInSnackbar(
-      {super.key,
-      required this.message,
-      required this.color,
-      required this.backgroundColor});
+  const SlideInSnackbar({
+    super.key,
+    required this.message,
+    required this.color,
+    required this.backgroundColor,
+  });
 
   @override
   SlideInSnackbarState createState() => SlideInSnackbarState();
@@ -87,10 +92,7 @@ class SlideInSnackbarState extends State<SlideInSnackbar>
     _offsetAnimation = Tween<Offset>(
       begin: Offset(0, -1.0),
       end: Offset(0, 0.0),
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -119,10 +121,7 @@ class SlideInSnackbarState extends State<SlideInSnackbar>
         ),
         child: Text(
           widget.message,
-          style: TextStyle(
-            color: widget.color,
-            fontSize: 16,
-          ),
+          style: TextStyle(color: widget.color, fontSize: 16),
         ),
       ),
     );

@@ -52,63 +52,69 @@ class GalleryPicker {
     }
   }
 
-  static Future<List<MediaFile>?> pickMedia(
-      {Config? config,
-      bool startWithRecent = false,
-      bool singleMedia = false,
-      Locale? locale,
-      PageTransitionType pageTransitionType = PageTransitionType.rightToLeft,
-      List<MediaFile>? initSelectedMedia,
-      List<MediaFile>? extraRecentMedia,
-      required BuildContext context}) async {
+  static Future<List<MediaFile>?> pickMedia({
+    Config? config,
+    bool startWithRecent = false,
+    bool singleMedia = false,
+    Locale? locale,
+    PageTransitionType pageTransitionType = PageTransitionType.rightToLeft,
+    List<MediaFile>? initSelectedMedia,
+    List<MediaFile>? extraRecentMedia,
+    required BuildContext context,
+  }) async {
     List<MediaFile>? media;
     await Navigator.push(
-        context,
-        PageTransition(
-            type: pageTransitionType,
-            child: GalleryPickerView(
-              onSelect: (mediaTmp) {
-                // media = mediaTmp;
-                media = List.from(mediaTmp);
-              },
-              config: config,
-              locale: locale,
-              singleMedia: singleMedia,
-              initSelectedMedia: initSelectedMedia,
-              extraRecentMedia: extraRecentMedia,
-              startWithRecent: startWithRecent,
-            )));
+      context,
+      PageTransition(
+        type: pageTransitionType,
+        child: GalleryPickerView(
+          onSelect: (mediaTmp) {
+            // media = mediaTmp;
+            media = List.from(mediaTmp);
+          },
+          config: config,
+          locale: locale,
+          singleMedia: singleMedia,
+          initSelectedMedia: initSelectedMedia,
+          extraRecentMedia: extraRecentMedia,
+          startWithRecent: startWithRecent,
+        ),
+      ),
+    );
     return media;
   }
 
-  static Future<void> pickMediaWithBuilder(
-      {Config? config,
-      required Widget Function(List<MediaFile> media, BuildContext context)?
-          multipleMediaBuilder,
-      Widget Function(String tag, MediaFile media, BuildContext context)?
-          heroBuilder,
-      Locale? locale,
-      bool singleMedia = false,
-      PageTransitionType pageTransitionType = PageTransitionType.rightToLeft,
-      List<MediaFile>? initSelectedMedia,
-      List<MediaFile>? extraRecentMedia,
-      bool startWithRecent = false,
-      required BuildContext context}) async {
+  static Future<void> pickMediaWithBuilder({
+    Config? config,
+    required Widget Function(List<MediaFile> media, BuildContext context)?
+    multipleMediaBuilder,
+    Widget Function(String tag, MediaFile media, BuildContext context)?
+    heroBuilder,
+    Locale? locale,
+    bool singleMedia = false,
+    PageTransitionType pageTransitionType = PageTransitionType.rightToLeft,
+    List<MediaFile>? initSelectedMedia,
+    List<MediaFile>? extraRecentMedia,
+    bool startWithRecent = false,
+    required BuildContext context,
+  }) async {
     await Navigator.push(
-        context,
-        PageTransition(
-            type: pageTransitionType,
-            child: GalleryPickerView(
-              onSelect: (media) {},
-              locale: locale,
-              multipleMediaBuilder: multipleMediaBuilder,
-              heroBuilder: heroBuilder,
-              singleMedia: singleMedia,
-              config: config,
-              initSelectedMedia: initSelectedMedia,
-              extraRecentMedia: extraRecentMedia,
-              startWithRecent: startWithRecent,
-            )));
+      context,
+      PageTransition(
+        type: pageTransitionType,
+        child: GalleryPickerView(
+          onSelect: (media) {},
+          locale: locale,
+          multipleMediaBuilder: multipleMediaBuilder,
+          heroBuilder: heroBuilder,
+          singleMedia: singleMedia,
+          config: config,
+          initSelectedMedia: initSelectedMedia,
+          extraRecentMedia: extraRecentMedia,
+          startWithRecent: startWithRecent,
+        ),
+      ),
+    );
   }
 
   static Future<void> openSheet() async {

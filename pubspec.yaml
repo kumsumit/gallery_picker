@@ -5,8 +5,8 @@ homepage: https://github.com/FlutterWay/gallery_picker
 publish_to: none
 
 environment:
-  sdk: ">=3.5.2 <4.0.0"
-  flutter: ">=3.24.3"
+  sdk: ">=3.10.0 <4.0.0"
+  flutter: ">=3.38.3"
 
 dependencies:
   flutter:
@@ -39,7 +39,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
 dependency_overrides:
   plugin_platform_interface:

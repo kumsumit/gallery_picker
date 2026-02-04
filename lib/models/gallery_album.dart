@@ -23,11 +23,12 @@ class GalleryAlbum {
 
   GalleryAlbum.album(this.album);
 
-  GalleryAlbum(
-      {required this.album,
-      required this.type,
-      this.thumbnail,
-      this.dateCategories = const []});
+  GalleryAlbum({
+    required this.album,
+    required this.type,
+    this.thumbnail,
+    this.dateCategories = const [],
+  });
 
   List<MediaFile> get medias {
     return dateCategories
@@ -64,7 +65,8 @@ class GalleryAlbum {
         DateTime? lastDate = mediaFile.lastModified;
         lastDate = lastDate ?? DateTime.now();
         dateCategory.add(
-            DateCategory(files: [mediaFile], name: name, dateTime: lastDate));
+          DateCategory(files: [mediaFile], name: name, dateTime: lastDate),
+        );
       }
     }
     dateCategories = dateCategory;
@@ -132,7 +134,7 @@ class GalleryAlbum {
     return mediumList;
   }
 
-  sort() {
+  void sort() {
     dateCategories.sort((a, b) => b.dateTime.compareTo(a.dateTime));
 
     for (var category in dateCategories) {
@@ -158,8 +160,9 @@ class GalleryAlbum {
     } else {
       DateTime? lastDate = file.lastModified;
       lastDate = lastDate ?? DateTime.now();
-      dateCategories
-          .add(DateCategory(files: [file], name: name, dateTime: lastDate));
+      dateCategories.add(
+        DateCategory(files: [file], name: name, dateTime: lastDate),
+      );
     }
   }
 }
@@ -168,8 +171,11 @@ class DateCategory {
   String name;
   List<MediaFile> files;
   DateTime dateTime;
-  DateCategory(
-      {required this.files, required this.name, required this.dateTime});
+  DateCategory({
+    required this.files,
+    required this.name,
+    required this.dateTime,
+  });
 }
 
 enum AlbumType { video, image, mixed }

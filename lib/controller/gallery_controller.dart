@@ -19,15 +19,17 @@ import 'picker_listener.dart';
 class PhoneGalleryController extends GetxController {
   late Config config;
 
-  void configuration(Config? config,
-      {required dynamic Function(List<MediaFile>) onSelect,
-      required Widget Function(String, MediaFile, BuildContext)? heroBuilder,
-      required bool isRecent,
-      required bool startWithRecent,
-      required List<MediaFile>? initSelectedMedias,
-      required List<MediaFile>? extraRecentMedia,
-      required Widget Function(List<MediaFile>, BuildContext)?
-          multipleMediasBuilder}) {
+  void configuration(
+    Config? config, {
+    required dynamic Function(List<MediaFile>) onSelect,
+    required Widget Function(String, MediaFile, BuildContext)? heroBuilder,
+    required bool isRecent,
+    required bool startWithRecent,
+    required List<MediaFile>? initSelectedMedias,
+    required List<MediaFile>? extraRecentMedia,
+    required Widget Function(List<MediaFile>, BuildContext)?
+    multipleMediasBuilder,
+  }) {
     this.onSelect = onSelect;
     this.heroBuilder = heroBuilder;
     this.isRecent = isRecent;
@@ -54,9 +56,9 @@ class PhoneGalleryController extends GetxController {
   bool configurationCompleted = false;
   late Function(List<MediaFile> selectedMedias) onSelect;
   Widget Function(String tag, MediaFile media, BuildContext context)?
-      heroBuilder;
+  heroBuilder;
   Widget Function(List<MediaFile> medias, BuildContext context)?
-      multipleMediasBuilder;
+  multipleMediasBuilder;
   GalleryMedia? _media;
   GalleryMedia? get media => _media;
   List<GalleryAlbum> get galleryAlbums => _media == null ? [] : _media!.albums;
@@ -105,23 +107,28 @@ class PhoneGalleryController extends GetxController {
     GalleryAlbum? recentTmp = recent;
     if (recentTmp != null) {
       _extraRecentMedia!.removeWhere(
-          (element) => recentTmp.files.any((file) => element.id == file.id));
+        (element) => recentTmp.files.any((file) => element.id == file.id),
+      );
     }
     update();
   }
 
-  Future<void> changeAlbum(
-      {required GalleryAlbum album,
-      required BuildContext context,
-      required PhoneGalleryController controller,
-      required bool singleMedia,
-      required bool isBottomSheet}) async {
+  Future<void> changeAlbum({
+    required GalleryAlbum album,
+    required BuildContext context,
+    required PhoneGalleryController controller,
+    required bool singleMedia,
+    required bool isBottomSheet,
+  }) async {
     _selectedFiles.clear();
     selectedAlbum = album;
     update();
     updatePickerListener();
-    await pageController.animateToPage(1,
-        duration: const Duration(milliseconds: 500), curve: Curves.easeIn);
+    await pageController.animateToPage(
+      1,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeIn,
+    );
   }
 
   Future<void> backToPicker() async {
@@ -129,8 +136,11 @@ class PhoneGalleryController extends GetxController {
     _pickerMode = false;
     pickerPageController = PageController(initialPage: 1);
     update();
-    await pageController.animateToPage(0,
-        duration: const Duration(milliseconds: 500), curve: Curves.easeIn);
+    await pageController.animateToPage(
+      0,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeIn,
+    );
     selectedAlbum = null;
     update();
   }
@@ -177,21 +187,18 @@ class PhoneGalleryController extends GetxController {
       if (info.version.sdkInt >= 33) {
         if (await PhoneGalleryController.requestPermission(Permission.photos)) {
           return await PhoneGalleryController.requestPermission(
-              Permission.videos);
+            Permission.videos,
+          );
         } else {
           return false;
         }
       } else {
         return await PhoneGalleryController.requestPermission(
-            Permission.storage);
+          Permission.storage,
+        );
       }
     }
-    bool statusStorage =
-        await PhoneGalleryController.requestPermission(Permission.storage);
-    if (statusStorage) {
-      return await PhoneGalleryController.requestPermission(Permission.photos);
-    }
-    return false;
+    return await PhoneGalleryController.requestPermission(Permission.storage);
   }
 
   static Future<bool> requestPermission(Permission permission) async {
@@ -212,8 +219,9 @@ class PhoneGalleryController extends GetxController {
       if (_extraRecentMedia != null) {
         GalleryAlbum? recentTmp = recent;
         if (recentTmp != null) {
-          _extraRecentMedia!.removeWhere((element) =>
-              recentTmp.files.any((file) => element.id == file.id));
+          _extraRecentMedia!.removeWhere(
+            (element) => recentTmp.files.any((file) => element.id == file.id),
+          );
         }
       }
       permissionGranted = true;
@@ -256,17 +264,20 @@ class PhoneGalleryController extends GetxController {
     if (await promptPermissionSetting()) {
       List<GalleryAlbum> tempGalleryAlbums = [];
 
-      List<Album> photoAlbums =
-          await PhotoGallery.listAlbums(mediumType: MediumType.image);
-      List<Album> videoAlbums =
-          await PhotoGallery.listAlbums(mediumType: MediumType.video);
+      List<Album> photoAlbums = await PhotoGallery.listAlbums(
+        mediumType: MediumType.image,
+      );
+      List<Album> videoAlbums = await PhotoGallery.listAlbums(
+        mediumType: MediumType.video,
+      );
       for (var photoAlbum in photoAlbums) {
         GalleryAlbum entireGalleryAlbum = GalleryAlbum.album(photoAlbum);
         await entireGalleryAlbum.initialize(locale: locale);
         entireGalleryAlbum.setType = AlbumType.image;
         if (videoAlbums.any((element) => element.id == photoAlbum.id)) {
-          Album videoAlbum =
-              videoAlbums.singleWhere((element) => element.id == photoAlbum.id);
+          Album videoAlbum = videoAlbums.singleWhere(
+            (element) => element.id == photoAlbum.id,
+          );
           GalleryAlbum videoGalleryAlbum = GalleryAlbum.album(videoAlbum);
           await videoGalleryAlbum.initialize(locale: locale);
           DateTime? lastPhotoDate = entireGalleryAlbum.lastDate;
@@ -274,8 +285,9 @@ class PhoneGalleryController extends GetxController {
 
           if (lastPhotoDate == null) {
             try {
-              entireGalleryAlbum.thumbnail =
-                  await videoAlbum.getThumbnail(highQuality: true);
+              entireGalleryAlbum.thumbnail = await videoAlbum.getThumbnail(
+                highQuality: true,
+              );
             } catch (e) {
               if (kDebugMode) {
                 print(e);
@@ -285,8 +297,9 @@ class PhoneGalleryController extends GetxController {
           } else {
             if (lastVideoDate.isAfter(lastPhotoDate)) {
               try {
-                entireGalleryAlbum.thumbnail =
-                    await videoAlbum.getThumbnail(highQuality: true);
+                entireGalleryAlbum.thumbnail = await videoAlbum.getThumbnail(
+                  highQuality: true,
+                );
               } catch (e) {
                 entireGalleryAlbum.thumbnail = null;
                 if (kDebugMode) {

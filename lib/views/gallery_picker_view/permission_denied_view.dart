@@ -13,34 +13,27 @@ class PermissionDeniedView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(
-            height: 50,
-          ),
+          const SizedBox(height: 50),
           Text(
             "Please allow access to your photos",
             style: TextStyle(
-                color: config.textStyle.color,
-                fontSize: 20,
-                fontWeight: FontWeight.w500),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            "This lets access your photos and videos from your library.",
-            style: TextStyle(
               color: config.textStyle.color,
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(
-            height: 10,
+          const SizedBox(height: 10),
+          Text(
+            "This lets access your photos and videos from your library.",
+            style: TextStyle(color: config.textStyle.color),
           ),
+          const SizedBox(height: 10),
           TextButton(
             onPressed: () async {
               await openAppSettings();
             },
             child: const Text("Enable library access"),
-          )
+          ),
         ],
       ),
     );
