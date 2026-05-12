@@ -1,5 +1,5 @@
-import 'package:bottom_sheet_scaffold/bottom_sheet_scaffold.dart';
 import 'package:flutter/material.dart';
+import 'package:gallery_picker/bottom_sheet_scaffold.dart';
 import 'package:gallery_picker/views/thumbnail_media_file.dart';
 import '../../controller/gallery_controller.dart';
 import '../../models/config.dart';

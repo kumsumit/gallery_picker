@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.8
+  cupertino_icons: ^1.0.9
   photo_gallery:
     git: https://github.com/kumsumit/photo_gallery.git
   permission_handler:
@@ -29,13 +29,10 @@ dependencies:
     git: "https://github.com/sumitsharansatsangi/video_thumbnail_plugin.git"
   intl: ^0.20.0
   page_transition: ^2.1.0
-  bottom_sheet_scaffold:
-    git: https://github.com/sumitsharansatsangi/bottom_sheet_scaffold.git
+  provider: ^6.1.5
   path: "^1.9.0"
   path_provider:
     git: "https://github.com/kumsumit/path_provider.git"
-  get:
-    git: https://github.com/jonataslaw/getx.git
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,21 +1,19 @@
 library;
 
-import 'package:bottom_sheet_scaffold/bottom_sheet_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery_picker/models/gallery_media.dart';
-import 'package:get/get.dart';
 import 'package:page_transition/page_transition.dart';
 
+import 'bottom_sheet_scaffold.dart';
 import '../../controller/gallery_controller.dart';
 import 'controller/picker_listener.dart';
 import 'models/config.dart';
 import 'models/media_file.dart';
 import 'views/gallery_picker_view/gallery_picker_view.dart';
 
-export 'package:bottom_sheet_scaffold/models/sheet_status.dart';
-export 'package:bottom_sheet_scaffold/views/bottom_sheet_builder.dart';
 export 'package:page_transition/src/enum.dart';
 
+export 'bottom_sheet_scaffold.dart';
 export 'models/config.dart';
 export 'models/gallery_album.dart';
 export 'models/gallery_media.dart';
@@ -36,20 +34,15 @@ export 'views/picker_scaffold.dart';
 
 class GalleryPicker {
   static Stream<List<MediaFile>> get listenSelectedFiles {
-    var controller = Get.put(PickerListener());
-    return controller.stream;
+    return PickerListener.instance.stream;
   }
 
   static void disposeSelectedFilesListener() {
-    if (Bind.isRegistered<PickerListener>()) {
-      Get.find<PickerListener>().dispose();
-    }
+    PickerListener.disposeInstance();
   }
 
   static void dispose() {
-    if (Bind.isRegistered<PhoneGalleryController>()) {
-      Get.find<PhoneGalleryController>().disposeController();
-    }
+    PhoneGalleryController.activeController?.dispose();
   }
 
   static Future<List<MediaFile>?> pickMedia({
@@ -142,8 +135,20 @@ class GalleryPicker {
   }
 
   static Future<GalleryMedia?> initializeGallery({Locale? locale}) async {
-    final controller = Get.put(PhoneGalleryController());
+    final controller = PhoneGalleryController();
+    controller.configuration(
+      null,
+      onSelect: (_) {},
+      heroBuilder: null,
+      isRecent: true,
+      startWithRecent: true,
+      initSelectedMedias: null,
+      extraRecentMedia: null,
+      multipleMediasBuilder: null,
+    );
     await controller.initializeAlbums(locale: locale);
-    return controller.media;
+    final media = controller.media;
+    controller.dispose();
+    return media;
   }
 }

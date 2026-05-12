@@ -1,12 +1,10 @@
-import 'package:bottom_sheet_scaffold/bottom_sheet_scaffold.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery_picker/controller/gallery_controller.dart';
 import '/gallery_picker.dart';
-import 'package:get/get.dart';
 
-class PickerScaffold extends StatelessWidget {
-  PickerScaffold({
+class PickerScaffold extends StatefulWidget {
+  const PickerScaffold({
     super.key,
     required this.onSelect,
     this.body,
@@ -40,20 +38,7 @@ class PickerScaffold extends StatelessWidget {
     this.singleMedia = false,
     this.multipleMediaBuilder,
     this.onWillPop,
-  }) {
-    if (Bind.isRegistered<PhoneGalleryController>()) {
-      if (initSelectedMedia != null) {
-        Get.find<PhoneGalleryController>().updateSelectedFiles(
-          initSelectedMedia!,
-        );
-      }
-      if (extraRecentMedia != null) {
-        Get.find<PhoneGalleryController>().updateExtraRecentMedia(
-          extraRecentMedia!,
-        );
-      }
-    }
-  }
+  });
   final double bottomSheetMinHeight;
   final Widget? body;
   final bool extendBody;
@@ -88,45 +73,77 @@ class PickerScaffold extends StatelessWidget {
   heroBuilder;
   final Widget Function(List<MediaFile> media, BuildContext context)?
   multipleMediaBuilder;
+
+  @override
+  State<PickerScaffold> createState() => _PickerScaffoldState();
+}
+
+class _PickerScaffoldState extends State<PickerScaffold> {
+  late final PhoneGalleryController _galleryController;
+
+  @override
+  void initState() {
+    super.initState();
+    _galleryController = PhoneGalleryController();
+  }
+
+  @override
+  void didUpdateWidget(covariant PickerScaffold oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initSelectedMedia != oldWidget.initSelectedMedia &&
+        widget.initSelectedMedia != null) {
+      _galleryController.updateSelectedFiles(widget.initSelectedMedia!);
+    }
+    if (widget.extraRecentMedia != oldWidget.extraRecentMedia &&
+        widget.extraRecentMedia != null) {
+      _galleryController.updateExtraRecentMedia(widget.extraRecentMedia!);
+    }
+  }
+
+  @override
+  void dispose() {
+    _galleryController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BottomSheetScaffold(
-      extendBody: extendBody,
-      extendBodyBehindAppBar: extendBodyBehindAppBar,
-      appBar: appBar,
-      floatingActionButton: floatingActionButton,
-      floatingActionButtonAnimator: floatingActionButtonAnimator,
-      floatingActionButtonLocation: floatingActionButtonLocation,
-      persistentFooterAlignment: persistentFooterAlignment,
-      persistentFooterButtons: persistentFooterButtons,
-      drawer: drawer,
-      onDrawerChanged: onDrawerChanged,
-      endDrawer: endDrawer,
-      onEndDrawerChanged: onEndDrawerChanged,
-      drawerDragStartBehavior: drawerDragStartBehavior,
-      drawerEdgeDragWidth: drawerEdgeDragWidth,
-      drawerEnableOpenDragGesture: drawerEnableOpenDragGesture,
-      drawerScrimColor: drawerScrimColor,
-      endDrawerEnableOpenDragGesture: endDrawerEnableOpenDragGesture,
-      resizeToAvoidBottomInset: resizeToAvoidBottomInset,
-      restorationId: restorationId,
-      primary: primary,
-      backgroundColor: backgroundColor,
-      bottomNavigationBar: bottomNavigationBar,
+      extendBody: widget.extendBody,
+      extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
+      appBar: widget.appBar,
+      floatingActionButton: widget.floatingActionButton,
+      floatingActionButtonAnimator: widget.floatingActionButtonAnimator,
+      floatingActionButtonLocation: widget.floatingActionButtonLocation,
+      persistentFooterAlignment: widget.persistentFooterAlignment,
+      persistentFooterButtons: widget.persistentFooterButtons,
+      drawer: widget.drawer,
+      onDrawerChanged: widget.onDrawerChanged,
+      endDrawer: widget.endDrawer,
+      onEndDrawerChanged: widget.onEndDrawerChanged,
+      drawerDragStartBehavior: widget.drawerDragStartBehavior,
+      drawerEdgeDragWidth: widget.drawerEdgeDragWidth,
+      drawerEnableOpenDragGesture: widget.drawerEnableOpenDragGesture,
+      drawerScrimColor: widget.drawerScrimColor,
+      endDrawerEnableOpenDragGesture: widget.endDrawerEnableOpenDragGesture,
+      resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
+      restorationId: widget.restorationId,
+      primary: widget.primary,
+      backgroundColor: widget.backgroundColor,
+      bottomNavigationBar: widget.bottomNavigationBar,
       oneFingerScrolling: true,
-      body: body,
+      body: widget.body,
       onWillPop: () async {
         if (BottomSheetPanel.isOpen) {
-          if (Bind.isRegistered<PhoneGalleryController>() &&
-              Get.find<PhoneGalleryController>().selectedAlbum != null) {
-            Get.find<PhoneGalleryController>().backToPicker();
+          if (_galleryController.selectedAlbum != null) {
+            _galleryController.backToPicker();
           } else {
             BottomSheetPanel.close();
           }
           return false;
         } else {
-          if (onWillPop != null) {
-            return await onWillPop!();
+          if (widget.onWillPop != null) {
+            return await widget.onWillPop!();
           } else {
             return true;
           }
@@ -134,26 +151,25 @@ class PickerScaffold extends StatelessWidget {
       },
       bottomSheet: DraggableBottomSheet(
         draggableBody: true,
-        minHeight: bottomSheetMinHeight,
+        minHeight: widget.bottomSheetMinHeight,
         maxHeight: MediaQuery.of(context).size.height,
         onHide: () {
-          if (Bind.isRegistered<PhoneGalleryController>()) {
-            Get.find<PhoneGalleryController>().resetBottomSheetView();
-          }
+          _galleryController.resetBottomSheetView();
         },
         body: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: GalleryPickerView(
-            onSelect: onSelect,
-            config: config,
-            heroBuilder: heroBuilder,
-            multipleMediaBuilder: multipleMediaBuilder,
-            singleMedia: singleMedia,
+            onSelect: widget.onSelect,
+            config: widget.config,
+            heroBuilder: widget.heroBuilder,
+            multipleMediaBuilder: widget.multipleMediaBuilder,
+            singleMedia: widget.singleMedia,
             isBottomSheet: true,
-            initSelectedMedia: initSelectedMedia,
-            extraRecentMedia: extraRecentMedia,
+            initSelectedMedia: widget.initSelectedMedia,
+            extraRecentMedia: widget.extraRecentMedia,
             startWithRecent: true,
+            controller: _galleryController,
           ),
         ),
       ),

@@ -5,7 +5,6 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_gallery/photo_gallery.dart';
 
@@ -16,8 +15,11 @@ import '/models/gallery_album.dart';
 import '/models/medium.dart';
 import 'picker_listener.dart';
 
-class PhoneGalleryController extends GetxController {
+class PhoneGalleryController extends ChangeNotifier {
+  static PhoneGalleryController? activeController;
+
   late Config config;
+  bool _isDisposed = false;
 
   void configuration(
     Config? config, {
@@ -48,6 +50,13 @@ class PhoneGalleryController extends GetxController {
       _pickerMode = true;
     }
     configurationCompleted = true;
+    activeController = this;
+  }
+
+  void update() {
+    if (!_isDisposed) {
+      notifyListeners();
+    }
   }
 
   late bool startWithRecent;
@@ -175,8 +184,8 @@ class PhoneGalleryController extends GetxController {
   }
 
   void updatePickerListener() {
-    if (Bind.isRegistered<PickerListener>()) {
-      Get.find<PickerListener>().updateController(_selectedFiles);
+    if (PickerListener.isRegistered) {
+      PickerListener.instance.updateController(_selectedFiles);
     }
   }
 
@@ -214,7 +223,10 @@ class PhoneGalleryController extends GetxController {
   }
 
   Future<void> initializeAlbums({Locale? locale}) async {
-    _media = await PhoneGalleryController.collectGallery(locale: locale);
+    _media = await PhoneGalleryController.collectGallery(
+      locale: locale,
+      config: config,
+    );
     if (_media != null) {
       if (_extraRecentMedia != null) {
         GalleryAlbum? recentTmp = recent;
@@ -260,9 +272,13 @@ class PhoneGalleryController extends GetxController {
         (await Permission.photos.isGranted);
   }
 
-  static Future<GalleryMedia?> collectGallery({Locale? locale}) async {
+  static Future<GalleryMedia?> collectGallery({
+    Locale? locale,
+    Config? config,
+  }) async {
     if (await promptPermissionSetting()) {
       List<GalleryAlbum> tempGalleryAlbums = [];
+      final effectiveConfig = config ?? Config();
 
       List<Album> photoAlbums = await PhotoGallery.listAlbums(
         mediumType: MediumType.image,
@@ -272,14 +288,20 @@ class PhoneGalleryController extends GetxController {
       );
       for (var photoAlbum in photoAlbums) {
         GalleryAlbum entireGalleryAlbum = GalleryAlbum.album(photoAlbum);
-        await entireGalleryAlbum.initialize(locale: locale);
+        await entireGalleryAlbum.initialize(
+          locale: locale,
+          config: effectiveConfig,
+        );
         entireGalleryAlbum.setType = AlbumType.image;
         if (videoAlbums.any((element) => element.id == photoAlbum.id)) {
           Album videoAlbum = videoAlbums.singleWhere(
             (element) => element.id == photoAlbum.id,
           );
           GalleryAlbum videoGalleryAlbum = GalleryAlbum.album(videoAlbum);
-          await videoGalleryAlbum.initialize(locale: locale);
+          await videoGalleryAlbum.initialize(
+            locale: locale,
+            config: effectiveConfig,
+          );
           DateTime? lastPhotoDate = entireGalleryAlbum.lastDate;
           DateTime? lastVideoDate = videoGalleryAlbum.lastDate;
 
@@ -309,7 +331,11 @@ class PhoneGalleryController extends GetxController {
             }
           }
           for (var file in videoGalleryAlbum.files) {
-            entireGalleryAlbum.addFile(file, locale: locale);
+            entireGalleryAlbum.addFile(
+              file,
+              locale: locale,
+              config: effectiveConfig,
+            );
           }
           entireGalleryAlbum.sort();
           entireGalleryAlbum.setType = AlbumType.mixed;
@@ -319,7 +345,10 @@ class PhoneGalleryController extends GetxController {
       }
       for (var videoAlbum in videoAlbums) {
         GalleryAlbum galleryVideoAlbum = GalleryAlbum.album(videoAlbum);
-        await galleryVideoAlbum.initialize(locale: locale);
+        await galleryVideoAlbum.initialize(
+          locale: locale,
+          config: effectiveConfig,
+        );
         galleryVideoAlbum.setType = AlbumType.video;
         tempGalleryAlbums.add(galleryVideoAlbum);
       }
@@ -375,10 +404,37 @@ class PhoneGalleryController extends GetxController {
   }
 
   void disposeController() {
+    if (_isDisposed) {
+      return;
+    }
     _media = null;
     _selectedFiles = [];
     _isInitialized = false;
-    Get.delete<PhoneGalleryController>();
+    configurationCompleted = false;
+    if (activeController == this) {
+      activeController = null;
+    }
     update();
+  }
+
+  @override
+  void dispose() {
+    if (_isDisposed) {
+      return;
+    }
+    final shouldDisposePageControllers = configurationCompleted;
+    _media = null;
+    _selectedFiles = [];
+    _isInitialized = false;
+    configurationCompleted = false;
+    if (activeController == this) {
+      activeController = null;
+    }
+    if (shouldDisposePageControllers) {
+      pageController.dispose();
+      pickerPageController.dispose();
+    }
+    _isDisposed = true;
+    super.dispose();
   }
 }

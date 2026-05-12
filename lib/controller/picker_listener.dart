@@ -1,21 +1,35 @@
 import 'dart:async';
-import 'package:get/get.dart';
+
 import '../models/media_file.dart';
 
-class PickerListener extends GetxController {
-  StreamController<List<MediaFile>> controller =
-      StreamController<List<MediaFile>>();
+class PickerListener {
+  PickerListener._();
 
-  Stream<List<MediaFile>> get stream => controller.stream;
+  static PickerListener? _instance;
 
-  void updateController(List<MediaFile> medias) {
-    controller.add(medias);
+  static PickerListener get instance {
+    return _instance ??= PickerListener._();
   }
 
-  @override
+  static bool get isRegistered => _instance != null;
+
+  static void disposeInstance() {
+    _instance?.dispose();
+    _instance = null;
+  }
+
+  final StreamController<List<MediaFile>> _controller =
+      StreamController<List<MediaFile>>.broadcast();
+
+  Stream<List<MediaFile>> get stream => _controller.stream;
+
+  void updateController(List<MediaFile> medias) {
+    if (!_controller.isClosed) {
+      _controller.add(List<MediaFile>.from(medias));
+    }
+  }
+
   void dispose() {
-    controller.close();
-    Bind.delete<PickerListener>();
-    super.dispose();
+    _controller.close();
   }
 }

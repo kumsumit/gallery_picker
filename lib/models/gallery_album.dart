@@ -2,12 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:photo_gallery/photo_gallery.dart';
 
-import '../controller/gallery_controller.dart';
 import '/models/media_file.dart';
 import '/models/medium.dart';
 import 'config.dart';
@@ -51,11 +49,11 @@ class GalleryAlbum {
     }
   }
 
-  Future<void> initialize({Locale? locale}) async {
+  Future<void> initialize({Locale? locale, Config? config}) async {
     List<DateCategory> dateCategory = [];
     for (var medium in sortAlbumMediaDates((await album.listMedia()).items)) {
       MediaFile mediaFile = MediaFile.medium(medium);
-      String name = getDateCategory(mediaFile, locale: locale);
+      String name = getDateCategory(mediaFile, locale: locale, config: config);
       if (dateCategory.any((element) => element.name == name)) {
         dateCategory
             .singleWhere((element) => element.name == name)
@@ -91,10 +89,8 @@ class GalleryAlbum {
   List<MediaFile> get files =>
       dateCategories.expand((element) => element.files).toList();
 
-  String getDateCategory(MediaFile media, {Locale? locale}) {
-    Config config = Bind.isRegistered<PhoneGalleryController>()
-        ? Get.find<PhoneGalleryController>().config
-        : Config();
+  String getDateCategory(MediaFile media, {Locale? locale, Config? config}) {
+    final effectiveConfig = config ?? Config();
     DateTime? lastDate = media.lastModified;
     lastDate = lastDate ?? DateTime.now();
     initializeDateFormatting();
@@ -102,11 +98,11 @@ class GalleryAlbum {
         ? (locale).languageCode
         : Platform.localeName.split('_')[0];
     if (daysBetween(lastDate) <= 3) {
-      return config.recent;
+      return effectiveConfig.recent;
     } else if (daysBetween(lastDate) > 3 && daysBetween(lastDate) <= 7) {
-      return config.lastWeek;
+      return effectiveConfig.lastWeek;
     } else if (DateTime.now().month == lastDate.month) {
-      return config.lastMonth;
+      return effectiveConfig.lastMonth;
     } else if (DateTime.now().year == lastDate.year) {
       String month = DateFormat.MMMM(languageCode).format(lastDate).toString();
       return "$month ${lastDate.day}";
@@ -150,8 +146,8 @@ class GalleryAlbum {
     }
   }
 
-  void addFile(MediaFile file, {Locale? locale}) {
-    String name = getDateCategory(file, locale: locale);
+  void addFile(MediaFile file, {Locale? locale, Config? config}) {
+    String name = getDateCategory(file, locale: locale, config: config);
     if (dateCategories.any((element) => element.name == name)) {
       dateCategories
           .singleWhere((element) => element.name == name)
