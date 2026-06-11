@@ -15,8 +15,11 @@ class PickerAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       elevation: 0,
+      scrolledUnderElevation: 0,
+      surfaceTintColor: Colors.transparent,
       backgroundColor: controller.config.appbarColor,
-      leading: TextButton(
+      leading: IconButton(
+        tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         onPressed: () async {
           if (isBottomSheet) {
             BottomSheetPanel.close();
@@ -26,21 +29,24 @@ class PickerAppBar extends StatelessWidget implements PreferredSizeWidget {
             controller.disposeController();
           }
         },
-        child: Icon(Icons.arrow_back, color: controller.config.appbarIconColor),
+        icon: Icon(
+          Icons.arrow_back,
+          color: controller.config.appbarIconColor,
+        ),
       ),
       title: getTitle(),
       actions: [
-        !controller.pickerMode && controller.isRecent
-            ? TextButton(
-                onPressed: () {
-                  controller.switchPickerMode(true);
-                },
-                child: Icon(
-                  Icons.check_box_outlined,
-                  color: controller.config.appbarIconColor,
-                ),
-              )
-            : const SizedBox(),
+        if (!controller.pickerMode && controller.isRecent)
+          IconButton(
+            tooltip: controller.config.selected,
+            onPressed: () {
+              controller.switchPickerMode(true);
+            },
+            icon: Icon(
+              Icons.check_box_outlined,
+              color: controller.config.appbarIconColor,
+            ),
+          ),
       ],
     );
   }

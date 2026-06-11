@@ -189,37 +189,44 @@ class PhoneGalleryController extends ChangeNotifier {
     }
   }
 
+  /// Whether a permission status allows reading media.
+  ///
+  /// On Android 14+ (API 34) and iOS 14+, the user can grant access to only a
+  /// selection of items, which surfaces as [PermissionStatus.limited]
+  /// (backed by `READ_MEDIA_VISUAL_USER_SELECTED` on Android). Treat that as
+  /// access granted so the picker can show the user-selected media.
+  static bool _allowsAccess(PermissionStatus status) {
+    return status.isGranted || status.isLimited;
+  }
+
   static Future<bool> promptPermissionSetting() async {
     if (Platform.isAndroid) {
       final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
       final AndroidDeviceInfo info = await deviceInfoPlugin.androidInfo;
+      // Android 13+ (API 33) uses granular media permissions. Android 14+
+      // (API 34) additionally supports partial ("Select photos") access.
       if (info.version.sdkInt >= 33) {
-        if (await PhoneGalleryController.requestPermission(Permission.photos)) {
-          return await PhoneGalleryController.requestPermission(
-            Permission.videos,
-          );
-        } else {
-          return false;
-        }
-      } else {
-        return await PhoneGalleryController.requestPermission(
-          Permission.storage,
+        final bool photos = await PhoneGalleryController.requestPermission(
+          Permission.photos,
         );
+        final bool videos = await PhoneGalleryController.requestPermission(
+          Permission.videos,
+        );
+        return photos && videos;
       }
+      // Android 12 and below.
+      return await PhoneGalleryController.requestPermission(Permission.storage);
     }
-    return await PhoneGalleryController.requestPermission(Permission.storage);
+    // iOS / other platforms.
+    return await PhoneGalleryController.requestPermission(Permission.photos);
   }
 
   static Future<bool> requestPermission(Permission permission) async {
-    if (await permission.isGranted) {
+    final PermissionStatus status = await permission.status;
+    if (_allowsAccess(status)) {
       return true;
-    } else {
-      var result = await permission.request();
-      if (result == PermissionStatus.granted) {
-        return true;
-      }
     }
-    return false;
+    return _allowsAccess(await permission.request());
   }
 
   Future<void> initializeAlbums({Locale? locale}) async {
@@ -259,17 +266,13 @@ class PhoneGalleryController extends ChangeNotifier {
       final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
       final AndroidDeviceInfo info = await deviceInfoPlugin.androidInfo;
       if (info.version.sdkInt >= 33) {
-        if (await Permission.photos.isGranted) {
-          return await Permission.videos.isGranted;
-        } else {
-          return false;
-        }
-      } else {
-        return await Permission.storage.isGranted;
+        final bool photos = _allowsAccess(await Permission.photos.status);
+        final bool videos = _allowsAccess(await Permission.videos.status);
+        return photos && videos;
       }
+      return _allowsAccess(await Permission.storage.status);
     }
-    return (await Permission.storage.isGranted) &&
-        (await Permission.photos.isGranted);
+    return _allowsAccess(await Permission.photos.status);
   }
 
   static Future<GalleryMedia?> collectGallery({

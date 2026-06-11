@@ -23,6 +23,86 @@ class Config {
       selected;
   Mode mode;
 
+  /// Corner radius used by modern (Material 3) surfaces such as thumbnails and
+  /// the selection indicator. Defaults to a rounded value.
+  final double borderRadius;
+
+  /// Builds a [Config] whose default colors and text styles are derived from
+  /// the ambient Material 3 [ColorScheme], so the picker matches the host
+  /// app's theme (including dynamic color) out of the box.
+  ///
+  /// Any value passed explicitly overrides the theme-derived default, so this
+  /// stays fully backward compatible with the default [Config] constructor.
+  factory Config.fromTheme(
+    BuildContext context, {
+    Color? backgroundColor,
+    Color? appbarColor,
+    Color? bottomSheetColor,
+    Color? appbarIconColor,
+    Color? underlineColor,
+    TextStyle? selectedMenuStyle,
+    TextStyle? unselectedMenuStyle,
+    TextStyle? textStyle,
+    TextStyle? appbarTextStyle,
+    Widget? permissionDeniedPage,
+    String recents = "RECENTS",
+    String recent = "Recent",
+    String gallery = "GALLERY",
+    String lastMonth = "Last Month",
+    String lastWeek = "Last Week",
+    String tapPhotoSelect = "Tap photo to select",
+    String selected = "Selected",
+    Widget? selectIcon,
+    double borderRadius = 12,
+  }) {
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme scheme = theme.colorScheme;
+    final TextTheme text = theme.textTheme;
+    return Config(
+      mode: scheme.brightness == Brightness.dark ? Mode.dark : Mode.light,
+      backgroundColor: backgroundColor ?? scheme.surface,
+      appbarColor: appbarColor ?? scheme.surface,
+      bottomSheetColor: bottomSheetColor ?? scheme.surfaceContainerHigh,
+      appbarIconColor: appbarIconColor ?? scheme.onSurfaceVariant,
+      underlineColor: underlineColor ?? scheme.primary,
+      selectedMenuStyle:
+          selectedMenuStyle ??
+          text.titleSmall?.copyWith(color: scheme.onSurface),
+      unselectedMenuStyle:
+          unselectedMenuStyle ??
+          text.titleSmall?.copyWith(color: scheme.onSurfaceVariant),
+      textStyle:
+          textStyle ??
+          text.bodyMedium?.copyWith(
+            color: scheme.onSurfaceVariant,
+            fontWeight: FontWeight.bold,
+          ),
+      appbarTextStyle:
+          appbarTextStyle ??
+          text.titleMedium?.copyWith(color: scheme.onSurface),
+      permissionDeniedPage: permissionDeniedPage,
+      recents: recents,
+      recent: recent,
+      gallery: gallery,
+      lastMonth: lastMonth,
+      lastWeek: lastWeek,
+      tapPhotoSelect: tapPhotoSelect,
+      selected: selected,
+      borderRadius: borderRadius,
+      selectIcon:
+          selectIcon ??
+          Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: scheme.primary,
+            ),
+            child: Icon(Icons.check, color: scheme.onPrimary),
+          ),
+    );
+  }
+
   Config({
     Color? backgroundColor,
     Color? appbarColor,
@@ -42,6 +122,7 @@ class Config {
     this.tapPhotoSelect = "Tap photo to select",
     this.selected = "Selected",
     this.mode = Mode.light,
+    this.borderRadius = 12,
     Widget? selectIcon,
   }) {
     if (backgroundColor == null) {

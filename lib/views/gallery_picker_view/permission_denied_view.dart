@@ -8,31 +8,45 @@ class PermissionDeniedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+    final Color titleColor = config.textStyle.color ?? scheme.onSurface;
+
     return Container(
       color: config.backgroundColor,
+      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: 50),
+          Icon(
+            Icons.photo_library_outlined,
+            size: 64,
+            color: config.underlineColor,
+          ),
+          const SizedBox(height: 20),
           Text(
             "Please allow access to your photos",
+            textAlign: TextAlign.center,
             style: TextStyle(
-              color: config.textStyle.color,
+              color: titleColor,
               fontSize: 20,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
           Text(
-            "This lets access your photos and videos from your library.",
-            style: TextStyle(color: config.textStyle.color),
+            "This lets you access photos and videos from your library.",
+            textAlign: TextAlign.center,
+            style: config.textStyle,
           ),
-          const SizedBox(height: 10),
-          TextButton(
+          const SizedBox(height: 24),
+          FilledButton.icon(
             onPressed: () async {
               await openAppSettings();
             },
-            child: const Text("Enable library access"),
+            icon: const Icon(Icons.settings_outlined),
+            label: const Text("Enable library access"),
           ),
         ],
       ),
